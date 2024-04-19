@@ -1,34 +1,41 @@
-import BlogDetails from "./BlogDetails";
-import Create from "./Create";
-import Home from "./Home";
-import NavBar from "./Navbar";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import NotFount from "./NotFound";
+import React, { useState } from 'react';
+import QRCode from 'qrcode.react';
+import QrReader from 'react-qr-reader';
 
-function App() {
+function QRApp() {
+  const [text, setText] = useState('');
+  const [result, setResult] = useState('');
+
+  const handleChange = (e) => {
+    setText(e.target.value);
+  };
+
+  const handleScan = (data) => {
+    if (data) {
+      setResult(data);
+    }
+  };
+
+  const handleError = (err) => {
+    console.error(err);
+  };
+
   return (
-    <Router>
-      <div className="App">
-        <NavBar />
-        <div className="content">
-          <Switch>
-            <Route exact path="/">
-              <Home />
-            </Route>
-            <Route path="/create">
-              <Create />
-            </Route>
-            <Route path="/blogs/:id">
-              <BlogDetails />
-            </Route>
-            <Route path="*">
-              <NotFount />
-            </Route>
-          </Switch>
-        </div>
-      </div>
-    </Router>
+    <div>
+      <h1>QR Code Generator</h1>
+      <input type="text" value={text} onChange={handleChange} />
+      {text && <QRCode value={text} />}
+      <hr />
+      <h1>QR Code Scanner</h1>
+      <QrReader
+        delay={300}
+        onError={handleError}
+        onScan={handleScan}
+        style={{ width: '100%' }}
+      />
+      {result && <p>{result}</p>}
+    </div>
   );
 }
 
-export default App;
+export default QRApp;
